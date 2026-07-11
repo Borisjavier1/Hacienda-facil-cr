@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4f7f8;
+  --foreground: #102022;
+  --surface: #ffffff;
+  --surface-ink: #123238;
+  --muted-ink: #5a747a;
+  --brand: #0f766e;
+  --brand-strong: #115e59;
+  --ring: #67e8f9;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-manrope);
+  --font-mono: var(--font-space-grotesk);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-manrope), sans-serif;
+  background-image:
+    radial-gradient(circle at 15% 10%, #cffafe 0%, transparent 40%),
+    radial-gradient(circle at 80% 15%, #ccfbf1 0%, transparent 35%),
+    linear-gradient(130deg, #f4f7f8 0%, #ecfeff 50%, #f0fdfa 100%);
+}
+
+::selection {
+  background: #99f6e4;
+  color: #042f2e;
+}
+
+.glass-surface {
+  backdrop-filter: blur(6px);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand) 18%, #ffffff);
+}
