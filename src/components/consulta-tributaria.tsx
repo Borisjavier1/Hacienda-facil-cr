@@ -224,7 +224,7 @@ export function ConsultaTributaria() {
           <div>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-teal-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-teal-700">
               <Building2 className="h-3.5 w-3.5" />
-              Hacienda Facil CR
+              Hacienda Fácil CR
             </div>
             <h1 className="font-[var(--font-space-grotesk)] text-3xl font-semibold leading-tight text-slate-900 sm:text-5xl">
               Consulta tributaria y codigos CAByS en segundos

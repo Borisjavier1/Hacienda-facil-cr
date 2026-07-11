@@ -13,7 +13,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Hacienda Facil CR",
+  title: "Hacienda Fácil CR",
   description:
     "Consulta tributaria y CAByS para contadores y pymes en Costa Rica.",
 };
