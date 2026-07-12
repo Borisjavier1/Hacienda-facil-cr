@@ -198,10 +198,16 @@ export function ConsultaTributaria() {
       `Cedula: ${state.result.data.identificacion}`,
       `Tipo: ${state.result.data.tipoIdentificacion}`,
       `Regimen: ${state.result.data.regimen}`,
+      `Estado: ${state.result.data.situacion?.estado ?? "No reportado"}`,
+      `Moroso: ${state.result.data.situacion?.moroso ?? "No reportado"}`,
+      `Omiso: ${state.result.data.situacion?.omiso ?? "No reportado"}`,
+      `Administracion: ${state.result.data.situacion?.administracionTributaria ?? "No reportado"}`,
+      `Mensaje Hacienda: ${state.result.data.situacion?.mensaje ?? "Sin mensaje"}`,
       `Confianza: ${confidenceLabel}`,
       "Actividades:",
       ...state.result.data.actividades.map(
-        (actividad) => `- ${actividad.descripcion} | Actividad ${actividad.codigoActividad} | CAByS ${actividad.codigoCabys}`,
+        (actividad) =>
+          `- ${actividad.descripcion} | Actividad ${actividad.codigoActividad} | CAByS ${actividad.codigoCabys} | Estado ${actividad.estado ?? "No reportado"} | Tipo ${actividad.tipo ?? "No reportado"}`,
       ),
     ].join("\n");
 
@@ -359,7 +365,29 @@ export function ConsultaTributaria() {
                 <Badge>Tipo: {state.result.data.tipoIdentificacion}</Badge>
                 <Badge>Regimen: {state.result.data.regimen}</Badge>
                 <Badge variant="outline">{confidenceLabel}</Badge>
+                <Badge variant="outline">Estado: {state.result.data.situacion?.estado ?? "No reportado"}</Badge>
+                <Badge variant="outline">Moroso: {state.result.data.situacion?.moroso ?? "No reportado"}</Badge>
+                <Badge variant="outline">Omiso: {state.result.data.situacion?.omiso ?? "No reportado"}</Badge>
               </div>
+              <p className="text-xs text-[var(--muted-ink)]">
+                Administracion tributaria: {state.result.data.situacion?.administracionTributaria ?? "No reportado"}
+              </p>
+              {state.result.data.situacion?.mensaje ? (
+                <p className="rounded-xl border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs text-cyan-900">
+                  Mensaje de Hacienda: {state.result.data.situacion.mensaje}
+                </p>
+              ) : null}
+              <details className="rounded-xl border border-teal-100 bg-teal-50/40 px-3 py-2">
+                <summary className="cursor-pointer text-xs font-semibold text-teal-800">
+                  Mas detalles de situacion
+                </summary>
+                <div className="mt-2 space-y-1 text-xs text-slate-700">
+                  <p>Estado: {state.result.data.situacion?.estado ?? "No reportado"}</p>
+                  <p>Moroso: {state.result.data.situacion?.moroso ?? "No reportado"}</p>
+                  <p>Omiso: {state.result.data.situacion?.omiso ?? "No reportado"}</p>
+                  <p>Administracion: {state.result.data.situacion?.administracionTributaria ?? "No reportado"}</p>
+                </div>
+              </details>
               {state.result.cachedAt ? (
                 <p className="text-xs text-[var(--muted-ink)]">
                   Cache valido hasta 24h. Ultima actualizacion: {new Date(state.result.cachedAt).toLocaleString("es-CR")}
@@ -397,6 +425,13 @@ export function ConsultaTributaria() {
                       <p className="mt-1 text-xs text-slate-600">
                         Actividad: {actividad.codigoActividad} | CAByS: {actividad.codigoCabys === "No disponible" ? "No reportado por Hacienda" : actividad.codigoCabys}
                       </p>
+                      <details className="mt-2 rounded-lg border border-teal-100 bg-white/80 px-2 py-1">
+                        <summary className="cursor-pointer text-xs font-medium text-teal-800">Mas detalles</summary>
+                        <div className="mt-1 text-xs text-slate-600">
+                          <p>Estado de actividad: {actividad.estado ?? "No reportado"}</p>
+                          <p>Tipo de actividad: {actividad.tipo ?? "No reportado"}</p>
+                        </div>
+                      </details>
                     </li>
                   ))
                 )}

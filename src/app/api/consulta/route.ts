@@ -6,7 +6,12 @@ import {
   isValidCedula,
   normalizeCedula,
 } from "@/lib/validators";
-import type { ActividadEconomica, ConsultaPayload, ConsultaResponse } from "@/types/consulta";
+import type {
+  ActividadEconomica,
+  ConsultaPayload,
+  ConsultaResponse,
+  SituacionTributaria,
+} from "@/types/consulta";
 
 type CacheRow = {
   cedula: string;
@@ -74,28 +79,56 @@ function parseActivities(raw: unknown): ActividadEconomica[] {
     return [];
   }
 
-  return raw
-    .map((item) => {
-      if (!item || typeof item !== "object") {
-        return null;
-      }
+  const activities: ActividadEconomica[] = [];
 
-      const source = item as Record<string, unknown>;
+  for (const item of raw) {
+    if (!item || typeof item !== "object") {
+      continue;
+    }
 
-      const codigoActividad =
-        source.codigo ?? source.codActividad ?? source.actividad ?? source.idActividad;
-      const codigoCabys =
-        source.codigoCabys ?? source.cabys ?? source.codigo_cabys ?? source.codCabys;
-      const descripcion =
-        source.descripcion ?? source.nombre ?? source.actividad ?? source.detalle;
+    const source = item as Record<string, unknown>;
 
-      return {
-        codigoActividad: String(codigoActividad ?? "No disponible"),
-        codigoCabys: String(codigoCabys ?? "No reportado por Hacienda"),
-        descripcion: String(descripcion ?? "Sin descripcion"),
-      };
-    })
-    .filter((activity): activity is ActividadEconomica => activity !== null);
+    const codigoActividad =
+      source.codigo ?? source.codActividad ?? source.actividad ?? source.idActividad;
+    const codigoCabys =
+      source.codigoCabys ?? source.cabys ?? source.codigo_cabys ?? source.codCabys;
+    const descripcion =
+      source.descripcion ?? source.nombre ?? source.actividad ?? source.detalle;
+
+    activities.push({
+      codigoActividad: String(codigoActividad ?? "No disponible"),
+      codigoCabys: String(codigoCabys ?? "No reportado por Hacienda"),
+      descripcion: String(descripcion ?? "Sin descripcion"),
+      estado: String(source.estado ?? "No reportado"),
+      tipo: String(source.tipo ?? "No reportado"),
+    });
+  }
+
+  return activities;
+}
+
+function parseSituacion(raw: unknown): SituacionTributaria {
+  if (!raw || typeof raw !== "object") {
+    return {
+      moroso: "No reportado",
+      omiso: "No reportado",
+      estado: "No reportado",
+      administracionTributaria: "No reportado",
+    };
+  }
+
+  const source = raw as Record<string, unknown>;
+
+  return {
+    moroso: String(source.moroso ?? "No reportado"),
+    omiso: String(source.omiso ?? "No reportado"),
+    estado: String(source.estado ?? "No reportado"),
+    administracionTributaria: String(source.administracionTributaria ?? "No reportado"),
+    mensaje:
+      typeof source.mensaje === "string" && source.mensaje.trim().length > 0
+        ? source.mensaje
+        : undefined,
+  };
 }
 
 function normalizeHaciendaResponse(
@@ -117,6 +150,7 @@ function normalizeHaciendaResponse(
         inferIdentificationType(cedula),
     ),
     regimen: parseRegimen(rawData.regimen ?? rawData.regimenTributario),
+    situacion: parseSituacion(rawData.situacion),
     actividades: parseActivities(
       rawData.actividades ??
         rawData.actividadesEconomicas ??

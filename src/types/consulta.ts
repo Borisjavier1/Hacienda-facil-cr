@@ -2,6 +2,16 @@ export type ActividadEconomica = {
   codigoActividad: string;
   codigoCabys: string;
   descripcion: string;
+  estado?: string;
+  tipo?: string;
+};
+
+export type SituacionTributaria = {
+  moroso: string;
+  omiso: string;
+  estado: string;
+  administracionTributaria: string;
+  mensaje?: string;
 };
 
 export type ConsultaPayload = {
@@ -9,6 +19,7 @@ export type ConsultaPayload = {
   nombre: string;
   tipoIdentificacion: string;
   regimen: string;
+  situacion?: SituacionTributaria;
   actividades: ActividadEconomica[];
 };
 
