@@ -183,6 +183,11 @@ export function ConsultaTributaria() {
     setCedula(historyCedula);
   };
 
+  const onRemoveHistoryItem = (historyCedula: string) => {
+    const nextHistory = history.filter((item) => item.cedula !== historyCedula);
+    persistHistory(nextHistory);
+  };
+
   const onCopySummary = async () => {
     if (!state.result) {
       return;
@@ -293,7 +298,7 @@ export function ConsultaTributaria() {
         </div>
       </section>
 
-      <section className="grid gap-5 md:grid-cols-2">
+      <section className="order-3 grid gap-5 md:order-none md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Historial local reciente</CardTitle>
@@ -310,9 +315,14 @@ export function ConsultaTributaria() {
                       <p className="font-semibold text-slate-900">{item.cedula}</p>
                       <p className="text-xs text-slate-600">{item.nombre}</p>
                     </div>
-                    <Button type="button" size="default" variant="secondary" onClick={() => onUseHistory(item.cedula)}>
-                      Usar
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button type="button" size="default" variant="secondary" onClick={() => onUseHistory(item.cedula)}>
+                        Usar
+                      </Button>
+                      <Button type="button" size="default" variant="secondary" onClick={() => onRemoveHistoryItem(item.cedula)}>
+                        Quitar
+                      </Button>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -337,7 +347,7 @@ export function ConsultaTributaria() {
       </section>
 
       {state.result ? (
-        <section className="grid gap-5 md:grid-cols-2">
+        <section className="order-2 grid gap-5 md:order-none md:grid-cols-2">
           <Card className="transition-transform duration-300 hover:-translate-y-1">
             <CardHeader>
               <CardTitle>{state.result.data.nombre}</CardTitle>
